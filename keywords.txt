@@ -1,0 +1,54 @@
+#######################################
+# Syntax Coloring Map For PID Library
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+PIDwFF	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+setProportional	KEYWORD2
+setIntegral	KEYWORD2
+setDerivative	KEYWORD2
+setFeedForward	KEYWORD2
+setSampleTime	KEYWORD2
+setOutputLimits	KEYWORD2
+setNoOutputLimits	KEYWORD2
+setIntegratorLimits	KEYWORD2
+setNoIntegratorLimits	KEYWORD2
+setInverse	KEYWORD2
+enableController	KEYWORD2
+disableController	KEYWORD2
+compute	KEYWORD2
+getKp	KEYWORD2
+getKi	KEYWORD2
+getKd	KEYWORD2
+getKf	KEYWORD2
+getKpOutput	KEYWORD2
+getKiOutput	KEYWORD2
+getKdOutput	KEYWORD2
+getKfOutput	KEYWORD2
+getEnabledStatus	KEYWORD2
+getInverseStatus	KEYWORD2
+getOutputLimitStatus	KEYWORD2
+getOutputMinLimit	KEYWORD2
+getOutputMaxLimit	KEYWORD2
+getIntegratorLimitStatus	KEYWORD2
+getIntegratorMinLimit	KEYWORD2
+getIntegratorMaxLimit	KEYWORD2
+getSampleTime	KEYWORD2
+getSampleTimeInSeconds	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+Kp	LITERAL1
+Ki	LITERAL1
+Kd	LITERAL1
+Kf	LITERAL1
