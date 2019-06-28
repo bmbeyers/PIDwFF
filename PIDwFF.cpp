@@ -3,7 +3,7 @@
  * by Brandon M Beyers <bmbeyers@gmail.com>                                   *
  * original source Brett Beauregard <br3ttb@gmail.com> brettbeauregard.com    *
  *                                                                            *
- * This library is licensed under a GPLv3 license.                            *
+ * This library is licensed under MIT license.                                *
  *                                                                            *
  * Refer to header file for additional information on PID controller.         *
  ******************************************************************************/
