@@ -14,7 +14,7 @@ The additional feed-forward control is an open-loop gain based on the Setpoint p
 
 The effective block diagram of this controller is shown below:
 
-
+```
                                      +----+
              +---------------------->| Kf |-----+
              |                       +----+     |
@@ -36,33 +36,14 @@ The effective block diagram of this controller is shown below:
                                +-->| ----- |----+
                                    | 1+sTd |
                                    +--------
+```
 
-+ Derivative block time constant (Td) is set implicitly based on the chosen SampleTime setting.
+Notes:
 
-Additional Notes:
+- Derivative block time constant (Td) is set implicitly based on the chosen SampleTime setting.
 
-- This PID class library includes a simplified constructor, as compared to the
-  original PID library, requiring only the Setpoint, Input, and Output pointer
-  references. An optional Inverse boolean is also allowed following these
-  required parameters.
+- This PID class library includes a simplified constructor, as compared to the original PID library, requiring only the Setpoint, Input, and Output pointer references. An optional Inverse boolean is also allowed following these required parameters.
 
-- This PID class library also includes an optional feed-forward gain to
-  improve the dynamic response of the system. By default, it is set at zero,
-  so the class behaves as a standard PID controller without any explicit call
-  from the user.
+- This PID class library also includes an optional feed-forward gain to improve the dynamic response of the system. By default, it is set at zero, so the class behaves as a standard PID controller without any explicit call from the user.
 
-- The Proportional, Integral, Derivative, and FeedForward gains are all
-  initialized at zero, and must be set individually using dedicated methods.
-  This allows for several variations of controllers available; however, the
-  controller cannot be enabled unless either Kp or Ki are used (>0). Examples
-  (without feed-forward gain) include P, I, PI, PD, PID, and ID.
-
-
-********************** FROM THE ORIGINAL LIBRARY README : **********************
-
-***************************************************************
-* Arduino PID Library - Version 1.2.0
-* by Brett Beauregard <br3ttb@gmail.com> brettbeauregard.com
-*
-* This Library is licensed under the MIT License
-***************************************************************
+- The Proportional, Integral, Derivative, and FeedForward gains are all initialized at zero, and must be set individually using dedicated methods. This allows for several variations of controllers available; however, the controller cannot be enabled unless either Kp or Ki are used (>0). Examples (without feed-forward gain) include P, I, PI, PD, PID, and ID.
