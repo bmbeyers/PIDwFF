@@ -1,9 +1,9 @@
 # PIDwFF
-PID controller with optional feed-forward gain
+Arduino PID controller with optional feed-forward gain library
 
-Arduino PID with Feed-Forward Controller Library
-by Brandon M Beyers <bmbeyers@gmail.com>
-original source Brett Beauregard <br3ttb@gmail.com> brettbeauregard.com
+By Brandon M Beyers <bmbeyers@gmail.com>
+
+Based on original PID library, source Brett Beauregard <br3ttb@gmail.com> brettbeauregard.com
 
 This library is licensed under MIT license.
 
