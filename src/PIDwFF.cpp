@@ -88,10 +88,11 @@ bool PID::compute() {
   unsigned long timeChange = (timeNow - _lastTime);
   if ( timeChange >= _sampleTime ) {
     _lastTime = timeNow;
+    double setpoint = *_setpoint;
     double input = *_input;
-    double error = *_setpoint - input;
-    double deltaError = (error - _lastError);
-    _lastError = error;
+    double error = setpoint - input;
+    double deltaInput = (input - _lastInput);
+    _lastInput = input;
 
     _KpOut = _Kp * error;
 
@@ -101,17 +102,17 @@ bool PID::compute() {
       if ( _KiOut < _minIntegratorLimit )  _KiOut = _minIntegratorLimit;
     }
 
-    _KdOut = _Kd * deltaError;
+    _KdOut = _Kd * deltaInput;
 
-    _KfOut = _Kf * input;
+    _KfOut = _Kf * setpoint;
 
-    double Output = _KpOut + _KiOut + _KdOut + _KfOut;
+    double Output = _KpOut + _KiOut - _KdOut + _KfOut;
 
-    if ( _inverted ) Output = -Output;
     if ( _outputLimitEnabled ) {
       if ( Output > _maxOutputLimit ) Output = _maxOutputLimit;
       if ( Output < _minOutputLimit ) Output = _minOutputLimit;
     }
+    if ( _inverted ) Output = -Output;
 
 	  *_output = Output;
 	  return true;
@@ -152,9 +153,7 @@ void PID::setTuning(double &userGain, double value) {
 
 void PID::initializeController() {
   PID::setControllerTuning();
-  /* Do as much as you can to ensure a bumpless transfer: */
-  _KiOut = *_output;
-  _lastError = *_setpoint - *_input;
+  _lastInput = *_input;
   _lastTime = (unsigned long)millis();
 }
 
@@ -173,4 +172,8 @@ void PID::setControllerTuning() {
   _Ki = _userKi * PID::getSampleTimeInSeconds();
   _Kd = _userKd / PID::getSampleTimeInSeconds();
   _Kf = _userKf;
+  /* Do as much as you can to ensure a bumpless transfer:
+   * Note that this assumes controller tuning is changed with plant at steady
+   * state. */
+  if (_Ki > 0.0) _KiOut = *_output - _Kf * *_setpoint;
 }

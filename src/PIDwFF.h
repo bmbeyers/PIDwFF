@@ -42,11 +42,11 @@
  *            |   |   |         | Imin_/      +----->| + |        /           *
  * Setpoint --+-->| + |         |     +----+ Op      |   |------------>Output *
  *                |   |--error--+---->| Kp |-------->| + | Omin_/             *
- *    Input ----->| - |         |     +----+         |   |                    *
- *                |   |         |                +-->| + |                    *
- *                +---+         |   +-------+    |   |   |                    *
- *                              |   |  sKd  | Od |   +---+                    *
- *                              +-->| ----- |----+                            *
+ *    Input --+-->| - |               +----+         |   |                    *
+ *            |   |   |                          +-->| - |                    *
+ *            |   +---+             +-------+    |   |   |                    *
+ *            |                     |  sKd  | Od |   +---+                    *
+ *            +-------------------->| ----- |----+                            *
  *                                  | 1+sTd |                                 *
  *                                  +--------                                 *
  *                                                                            *
@@ -158,8 +158,8 @@ class PID {
     double _KdOut;
     double _KfOut;
 
-    /* Stored derivative integrator, required for derivative gain: */
-    double _lastError;
+    /* Stored previous Input value, required for derivative gain: */
+    double _lastInput;
 
     /* Output and Integrator limit settings: */
     double _minOutputLimit = 0.0;

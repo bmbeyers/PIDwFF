@@ -7,35 +7,38 @@ Based on original PID library, source Brett Beauregard <br3ttb@gmail.com> brettb
 
 This library is licensed under MIT license.
 
-The common PID Controller is implemented in a closed feedback loop and has a maximum of three terms: the proportional (P) term, the integral (I) term, and the derivative (D) term. It is also common to have controllers with one or two of these terms set to zero, resulting in a simpler type controller, such as P, I, PI, or PD controllers. The controller acts on the measured error between the Input and Setpoint parameter values. Improperly tuned PID controllers can demonstrate unstable behavior, which could lead to equipment damage. For this
-reason, use of this controller should be used only by competent individuals.
+The common PID Controller is implemented in a closed feedback loop and has a maximum of three terms: the proportional (P) term, the integral (I) term, and the derivative (D) term. It is also common to have controllers with one or two of these terms set to zero, resulting in a simpler type controller, such as P, I, PI, or PD controllers. The controller acts on the measured error between the Input and Setpoint parameter values. Improperly tuned PID controllers can demonstrate unstable behavior, which could lead to equipment damage. For this reason, use of this controller should be used only by competent individuals.
 
 The additional feed-forward control is an open-loop gain based on the Setpoint parameter value, which may be used to improve the transient response of the controller. This optional feature requires fundamental knowledge of the steady-state relationship between Setpoint and Output, which may not be consistent across all modes of operation. For this reason, use of this controller should be used only by competent individuals.
 
 The effective block diagram of this controller is shown below:
 
 ```
-                                     +----+
-             +---------------------->| Kf |-----+
-             |                       +----+     |
-             |                                  |
-             |                            _Imax |
-             |                           /      |
-             |                       +----+     |
-             |                       | Ki |     |   +---+
-             |                 +---->| -- |--+  |   |   |
-             |                 |     |  s |  |  +-->| + |
-             |   +---+         |     +----+  |      |   |         _Omax
-             |   |   |         | Imin_/      +----->| + |        /
-  Setpoint --+-->| + |         |     +----+         |   |------------>Output
-                 |   |--error--+---->| Kp |-------->| + | Omin_/
-     Input ----->| - |         |     +----+         |   |
-                 |   |         |                +-->| + |
-                 +---+         |   +-------+    |   |   |
-                               |   |  sKd  |    |   +---+
-                               +-->| ----- |----+
-                                   | 1+sTd |
-                                   +--------
+******************************************************************************
+*                                                                            *
+*                                    +----+ Of                               *
+*            +---------------------->| Kf |-----+                            *
+*            |                       +----+     |                            *
+*            |                                  |                            *
+*            |                            _Imax |                            *
+*            |                           /      |                            *
+*            |                       +----+     |                            *
+*            |                       | Ki | Oi  |   +---+                    *
+*            |                 +---->| -- |--+  |   |   |                    *
+*            |                 |     |  s |  |  +-->| + |                    *
+*            |   +---+         |     +----+  |      |   |         _Omax      *
+*            |   |   |         | Imin_/      +----->| + |        /           *
+* Setpoint --+-->| + |         |     +----+ Op      |   |------------>Output *
+*                |   |--error--+---->| Kp |-------->| + | Omin_/             *
+*    Input --+-->| - |               +----+         |   |                    *
+*            |   |   |                          +-->| - |                    *
+*            |   +---+             +-------+    |   |   |                    *
+*            |                     |  sKd  | Od |   +---+                    *
+*            +-------------------->| ----- |----+                            *
+*                                  | 1+sTd |                                 *
+*                                  +--------                                 *
+*                                                                            *
+******************************************************************************/
 ```
 
 Notes:
