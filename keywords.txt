@@ -6,16 +6,25 @@
 # Datatypes (KEYWORD1)
 #######################################
 
-PIDwFF	KEYWORD1
+PID KEYWORD1
+PID_Plus  KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
 
+changeSetpoint  KEYWORD2
+changeInput KEYWORD2
+changeOutput KEYWORD2
 setProportional	KEYWORD2
 setIntegral	KEYWORD2
 setDerivative	KEYWORD2
+SetVelocity KEYWORD2
 setFeedForward	KEYWORD2
+setDerivativeTime KEYWORD2
+setLeadTime KEYWORD2
+setLagTime KEYWORD2
+setBiasValue KEYWORD2
 setSampleTime	KEYWORD2
 setOutputLimits	KEYWORD2
 setNoOutputLimits	KEYWORD2
@@ -25,13 +34,19 @@ setInverse	KEYWORD2
 enableController	KEYWORD2
 disableController	KEYWORD2
 compute	KEYWORD2
+getSetpoint KEYWORD2
+getInput KEYWORD2
+getOutput KEYWORD2
 getKp	KEYWORD2
 getKi	KEYWORD2
 getKd	KEYWORD2
+getKv KEYWORD2
 getKf	KEYWORD2
+getBias KEYWORD2
 getKpOutput	KEYWORD2
 getKiOutput	KEYWORD2
 getKdOutput	KEYWORD2
+getKvOutput KEYWORD2
 getKfOutput	KEYWORD2
 getEnabledStatus	KEYWORD2
 getInverseStatus	KEYWORD2
@@ -43,6 +58,13 @@ getIntegratorMinLimit	KEYWORD2
 getIntegratorMaxLimit	KEYWORD2
 getSampleTime	KEYWORD2
 getSampleTimeInSeconds	KEYWORD2
+getDerivativeTime KEYWORD2
+getDerivativeTimeInSeconds  KEYWORD2
+getLeadTime KEYWORD2
+getLeadTimeInSeconds  KEYWORD2
+getLagTime  KEYWORD2
+getLagTimeInSeconds KEYWORD2
+getLeadLagInService KEYWORD2
 
 #######################################
 # Constants (LITERAL1)

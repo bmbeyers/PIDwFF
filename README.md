@@ -16,34 +16,38 @@ The effective block diagram of this controller is shown below:
 ```
 ******************************************************************************
 *                                                                            *
-*                                    +----+ Of                               *
-*            +---------------------->| Kf |-----+                            *
-*            |                       +----+     |                            *
-*            |                                  |                            *
-*            |                            _Imax |                            *
-*            |                           /      |                            *
-*            |                       +----+     |                            *
-*            |                       | Ki | Oi  |   +---+                    *
-*            |                 +---->| -- |--+  |   |   |                    *
-*            |                 |     |  s |  |  +-->| + |                    *
-*            |   +---+         |     +----+  |      |   |         _Omax      *
-*            |   |   |         | Imin_/      +----->| + |        /           *
-* Setpoint --+-->| + |         |     +----+ Op      |   |------------>Output *
-*                |   |--error--+---->| Kp |-------->| + | Omin_/             *
-*    Input --+-->| - |               +----+         |   |                    *
-*            |   |   |                          +-->| - |                    *
-*            |   +---+             +-------+    |   |   |                    *
-*            |                     |  sKd  | Od |   +---+                    *
-*            +-------------------->| ----- |----+                            *
+*                    ,-------,                                               *
+*                    | 1+sTc |       ,----, Of                               *
+*            ,-------| ----- |------>| Kf |-----+                            *
+*            |       | 1+sTb |       '----'     |                            *
+*            |       '-------'                  |                            *
+*            |                            _Imax |           ,-- Bias         *
+*            |                           /      |   ,---,   |                *
+*            |                       ,----,     |   |   |   |                *
+*            |                       | Ki | Oi  |   | + |<--'                *
+*            |                 ,---->| -- |--+  |   |   |                    *
+*            |                 |     |  s |  |  '-->| + |                    *
+*            |   ,---,         |     '----'  |      |   |                    *
+*            |   |   |         | Imin_/      '----->| + |         _Omax      *
+* Setpoint --+-->| + |         |     ,----, Op      |   |        /           *
+*                |   |--error--+---->| Kp |-------->| + |------------>Output *
+*    Input --+-->| - |               '----'         |   | Omin_/             *
+*            |   |   |                       ,----->| - |                    *
+*            |   '---'                       |      |   |                    *
+*            |                       ,----,  |  ,-->| - |                    *
+*            '-----------------+---->| Kv |--+  |   |   |                    *
+*                              |     '----' Ov  |   '---'                    *
+*                              |                |                            *
+*                              |   ,-------,    |                            *
+*                              |   |  sKd  | Od |                            *
+*                              '-->| ----- |----'                            *
 *                                  | 1+sTd |                                 *
-*                                  +--------                                 *
+*                                  '-------'                                 *
 *                                                                            *
 ******************************************************************************/
 ```
 
 Notes:
-
-- Derivative block time constant (Td) is set implicitly based on the chosen SampleTime setting.
 
 - This PID class library includes a simplified constructor, as compared to the original PID library, requiring only the Setpoint, Input, and Output pointer references. An optional Inverse boolean is also allowed following these required parameters.
 

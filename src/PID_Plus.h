@@ -1,5 +1,5 @@
 /******************************************************************************
- * Arduino PID with Feed-Forward Controller Library                           *
+ * Arduino Enhanced PID Controller Library                                    *
  * by Brandon Beyers <bmbeyers@gmail.com>                                     *
  *                                                                            *
  * This library is based on PID library, with original source by Brett        *
@@ -19,44 +19,25 @@
  * controller should be used only by competent individuals.                   *
  *                                                                            *
  * The additional feed-forward control is an open-loop gain based on the      *
- * Setpoint parameter value, which may be used to improve the transient       *
- * response of the controller. This optional feature requires fundamental     *
- * knowledge of the steady-state relationship between Setpoint and Output,    *
- * which may not be consistent across all modes of operation. For this reason,*
- * use of this controller should be used only by competent individuals.       *
+ * Setpoint parameter value, which, together with the lead-lag compensator,   *
+ * may be used to improve the transient response of the controller. This      *
+ * optional feature requires fundamental knowledge of the steady-state        *
+ * relationship between Setpoint and Output, which may not be consistent      *
+ * across all modes of operation. For this reason, use of this controller     *
+ * should be used only by competent individuals.                              *
  *                                                                            *
- * The effective block diagram of this controller is shown below:             *
+ * In addition to the feed-forward control, the feedback proportional gain,   *
+ * Kv, converts a standard PID controller into a velocity form PID controller.*
+ * The velocity form PID control may be used to produce stable behavior and   *
+ * minimize overshoot of integrating processes. The benefit of the separate   *
+ * control gain lies in the ability to retain the error proportional gain and *
+ * obtain a faster rise time.                                                 *
  *                                                                            *
- *                                                                            *
- *                                    +----+ Of                               *
- *            +---------------------->| Kf |-----+                            *
- *            |                       +----+     |                            *
- *            |                                  |                            *
- *            |                            _Imax |                            *
- *            |                           /      |                            *
- *            |                       +----+     |                            *
- *            |                       | Ki | Oi  |   +---+                    *
- *            |                 +---->| -- |--+  |   |   |                    *
- *            |                 |     |  s |  |  +-->| + |                    *
- *            |   +---+         |     +----+  |      |   |         _Omax      *
- *            |   |   |         | Imin_/      +----->| + |        /           *
- * Setpoint --+-->| + |         |     +----+ Op      |   |------------>Output *
- *                |   |--error--+---->| Kp |-------->| + | Omin_/             *
- *    Input --+-->| - |               +----+         |   |                    *
- *            |   |   |                          +-->| - |                    *
- *            |   +---+             +-------+    |   |   |                    *
- *            |                     |  sKd  | Od |   +---+                    *
- *            +-------------------->| ----- |----+                            *
- *                                  | 1+sTd |                                 *
- *                                  +--------                                 *
- *                                                                            *
- *                                                                            *
- * NOTE: Derivative block time constant (Td) is set implicitly based on the   *
- * chosen SampleTime setting.                                                 *
+ * The effective block diagram of this controller is shown in the README file *
  ******************************************************************************/
 
-#ifndef PIDwFF_h
-#define PIDwFF_h
+#ifndef PID_Plus_h
+#define PID_Plus_h
 
 class PID {
   public:
@@ -69,11 +50,23 @@ class PID {
     /* Overloaded constructor: Inverse automatically set to false. */
     PID(double* Setpoint, double* Input, double* Output);
 
+    /* (Re)set the Input, Output, or Setpoint pointers: */
+    void changeSetpoint(double* NewSetpoint);
+    void changeInput(double* NewInput);
+    void changeOutput(double* NewOutput);
+
     /* Set the PID and feed-forward tuning values: */
     void setProportional(double Kp);
     void setIntegral(double Ki);
     void setDerivative(double Kd);
+    void SetVelocity(double Kv);
     void setFeedForward(double Kf);
+
+    void setDerivativeTime(int Td);
+    void setLeadTime(int Tc);
+    void setLagTime(double Tb);
+
+    void setBiasValue(double b);
 
     /* Set the sample time:
      * NOTE: Only allowed when controller is not enabled. */
@@ -96,17 +89,25 @@ class PID {
      * NOTE: This should be called every time loop() cycles. */
     bool compute();
 
+    double getSetpoint();
+    double getInput();
+    double getOutput();
+
     /* Display functions: These functions query the PID controller for the
      * internally-used values. It is intended for front-end use, where the user
      * needs to know what values are actually being used inside the control. */
-  	double getKp();
+    double getKp();
   	double getKi();
   	double getKd();
+    double getKv();
     double getKf();
+
+    double getBias();
 
     double getKpOutput();
     double getKiOutput();
     double getKdOutput();
+    double getKvOutput();
     double getKfOutput();
 
   	bool getEnabledStatus();
@@ -123,42 +124,71 @@ class PID {
     int getSampleTime();
     double getSampleTimeInSeconds();
 
-  private:
-    /* Generic function to set tuning gain: */
-    void setTuning(double &userGain, double value);
+    int getDerivativeTime();
+    double getDerivativeTimeInSeconds();
 
-    /* Initialize the controller using the user-provided gains and settings: */
+    int getLeadTime();
+    double getLeadTimeInSeconds();
+
+    int getLagTime();
+    double getLagTimeInSeconds();
+
+    bool getLeadLagInService();
+
+  private:
+    /* Generic functions to set tuning gains or filter time constants: */
+    void setTuningGain(double &userGain, double value);
+    void setFilterTimeConstant(int &userTime, int value);
+
+    /* Initialize the controller: */
 	  void initializeController();
 
-    /* Validation check of the user-provided gains: */
+    /* Validation check of the controller gains: */
     bool validTuning();
 
-    /* Convert user PID settings into those used by the contorller: */
-    void setControllerTuning();
+    /* Functions to call for private variables: */
+    double getLastSetpoint();
+    double getLastInput();
+
+    double getError();
+    double getDeltaSetpoint();
+    double getDeltaInput();
+
+    void updateKpOutput();
+    void updateKiOutput();
+    void updateKdOutput();
+    void updateKvOutput();
+    void updateKfOutput();
+
+    void updateOutput();
 
     /* Minimum tuning gains and time constant settings: */
     const double MIN_GAIN = 0.0;
     const int MIN_SAMPLE_TIME = 5;
+    const int MIN_FILTER_TIME = 0;
 
-    /* User-provided tuning gain values: */
-	  double _userKp = MIN_GAIN;
-	  double _userKi = MIN_GAIN;
-	  double _userKd = MIN_GAIN;
-    double _userKf = MIN_GAIN;
+    /* Controller tuning gain  and filter time constant values: */
+	  double _Kp = MIN_GAIN;
+    double _Ki = MIN_GAIN;
+    double _Kd = MIN_GAIN;
+    double _Kv = MIN_GAIN;
+    double _Kf = MIN_GAIN;
 
-    /* Calculated tuning gain values set during the initialization process: */
-	  double _Kp;
-    double _Ki;
-    double _Kd;
-    double _Kf;
+    int _Td = MIN_FILTER_TIME;
+    int _Tc = MIN_FILTER_TIME;
+    int _Tb = MIN_FILTER_TIME;
+
+    double _bias = MIN_GAIN;
 
     /* Stored PID outputs: */
     double _KpOut;
     double _KiOut;
     double _KdOut;
+    double _KvOut;
     double _KfOut;
 
-    /* Stored previous Input value, required for derivative gain: */
+    /* Stored previous values for derivative and lead-lag compensator: */
+    double _lastSetpoint;
     double _lastInput;
 
     /* Output and Integrator limit settings: */
